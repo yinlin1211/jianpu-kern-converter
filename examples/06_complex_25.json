@@ -1,0 +1,16 @@
+{
+  "title": "Complex 2.5-beat value",
+  "meter_bpb": 4,
+  "events": [
+    {
+      "onset": "3",
+      "dur": "5/2",
+      "midi": 60
+    },
+    {
+      "onset": "11/2",
+      "dur": "1/2",
+      "midi": 64
+    }
+  ]
+}

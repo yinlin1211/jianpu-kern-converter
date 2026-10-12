@@ -1,0 +1,21 @@
+{
+  "title": "Cross-bar tie",
+  "meter_bpb": 4,
+  "events": [
+    {
+      "onset": "3",
+      "dur": "2",
+      "midi": 64
+    },
+    {
+      "onset": "5",
+      "dur": "1",
+      "midi": 67
+    },
+    {
+      "onset": "6",
+      "dur": "1",
+      "midi": 69
+    }
+  ]
+}

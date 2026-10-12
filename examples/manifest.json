@@ -1,0 +1,72 @@
+[
+  {
+    "slug": "01_basic_quarters",
+    "title": "Basic quarter-note grid",
+    "description": "Regular quarter-note melody on the 4/4 grid.",
+    "events": 4,
+    "exact": true
+  },
+  {
+    "slug": "02_internal_rests",
+    "title": "Internal rests",
+    "description": "Gaps inside a bar are emitted as explicit Kern rests.",
+    "events": 3,
+    "exact": true
+  },
+  {
+    "slug": "03_pickup",
+    "title": "Pickup / anacrusis",
+    "description": "The first note starts at beat 3, so the leading rest preserves phase.",
+    "events": 4,
+    "exact": true
+  },
+  {
+    "slug": "04_dotted_values",
+    "title": "Dotted values",
+    "description": "Dotted quarter and dotted eighth durations.",
+    "events": 3,
+    "exact": true
+  },
+  {
+    "slug": "05_cross_bar_tie",
+    "title": "Cross-bar tie",
+    "description": "A note crossing the 4/4 barline is split and tied in Kern.",
+    "events": 3,
+    "exact": true
+  },
+  {
+    "slug": "06_complex_25",
+    "title": "Complex 2.5-beat value",
+    "description": "A value without one-token Kern spelling is split exactly and tied.",
+    "events": 2,
+    "exact": true
+  },
+  {
+    "slug": "07_triplets",
+    "title": "Triplet timing",
+    "description": "Third-beat subdivisions stay exact in the Fraction timeline.",
+    "events": 4,
+    "exact": true
+  },
+  {
+    "slug": "08_chromatic_octaves",
+    "title": "Accidentals and octaves",
+    "description": "Chromatic pitches and multiple Kern octave letters.",
+    "events": 4,
+    "exact": true
+  },
+  {
+    "slug": "09_repeated_pitch",
+    "title": "Repeated pitch without a tie",
+    "description": "Adjacent events with the same pitch remain separate events.",
+    "events": 4,
+    "exact": true
+  },
+  {
+    "slug": "10_multi_bar_rest",
+    "title": "Multi-bar rest and late entry",
+    "description": "Long gaps are preserved across bar boundaries.",
+    "events": 3,
+    "exact": true
+  }
+]

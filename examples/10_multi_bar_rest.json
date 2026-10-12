@@ -1,0 +1,21 @@
+{
+  "title": "Multi-bar rest and late entry",
+  "meter_bpb": 4,
+  "events": [
+    {
+      "onset": "0",
+      "dur": "1",
+      "midi": 60
+    },
+    {
+      "onset": "12",
+      "dur": "1",
+      "midi": 67
+    },
+    {
+      "onset": "13",
+      "dur": "1/2",
+      "midi": 69
+    }
+  ]
+}

@@ -1,0 +1,26 @@
+{
+  "title": "Repeated pitch without a tie",
+  "meter_bpb": 4,
+  "events": [
+    {
+      "onset": "0",
+      "dur": "1/2",
+      "midi": 64
+    },
+    {
+      "onset": "1",
+      "dur": "1/2",
+      "midi": 64
+    },
+    {
+      "onset": "2",
+      "dur": "1",
+      "midi": 64
+    },
+    {
+      "onset": "3",
+      "dur": "1",
+      "midi": 62
+    }
+  ]
+}

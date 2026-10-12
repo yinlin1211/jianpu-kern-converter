@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="994" height="378" viewBox="0 0 994 378">
+<rect width="100%" height="100%" fill="#fbfaf7"/>
+<text x="54.0" y="32.0" font-family="DejaVu Sans, sans-serif" font-size="21px" font-weight="700" fill="#17212b">Complex 2.5-beat value</text>
+<text x="54.0" y="56.0" font-family="DejaVu Sans, sans-serif" font-size="12px" font-weight="400" fill="#17212b">source events vs Kern roundtrip | exact Fraction timeline</text>
+<line x1="54.0" y1="72.0" x2="54.0" y2="318.0" stroke="#697681" stroke-width="2"/>
+<text x="59.0" y="64.0" font-family="DejaVu Sans, sans-serif" font-size="11px" font-weight="400" fill="#17212b">bar 1</text>
+<line x1="502.0" y1="72.0" x2="502.0" y2="318.0" stroke="#697681" stroke-width="2"/>
+<text x="507.0" y="64.0" font-family="DejaVu Sans, sans-serif" font-size="11px" font-weight="400" fill="#17212b">bar 2</text>
+<line x1="950.0" y1="72.0" x2="950.0" y2="318.0" stroke="#697681" stroke-width="2"/>
+<text x="8.0" y="157.0" font-family="DejaVu Sans, sans-serif" font-size="12px" font-weight="700" fill="#17212b">source</text>
+<line x1="54.0" y1="152.0" x2="962.0" y2="152.0" stroke="#c7cdd2" stroke-width="1"/>
+<rect x="54.0" y="134.0" width="336.0" height="36" rx="4" fill="#e5e8eb" stroke="#b7c0c7"/>
+<rect x="390.0" y="122.0" width="280.0" height="60" rx="6" fill="#b9ddf5" stroke="#2674a8" stroke-width="1.5"/>
+<text x="397.0" y="147.0" font-family="DejaVu Sans, sans-serif" font-size="16px" font-weight="700" fill="#17212b">1</text>
+<text x="397.0" y="166.0" font-family="DejaVu Sans, sans-serif" font-size="10px" font-weight="400" fill="#17212b">#0 3+5/2</text>
+<rect x="670.0" y="122.0" width="56.0" height="60" rx="6" fill="#b9ddf5" stroke="#2674a8" stroke-width="1.5"/>
+<text x="677.0" y="147.0" font-family="DejaVu Sans, sans-serif" font-size="16px" font-weight="700" fill="#17212b">3</text>
+<text x="677.0" y="166.0" font-family="DejaVu Sans, sans-serif" font-size="10px" font-weight="400" fill="#17212b">#1 11/2+1/2</text>
+<text x="8.0" y="279.0" font-family="DejaVu Sans, sans-serif" font-size="12px" font-weight="700" fill="#17212b">after</text>
+<line x1="54.0" y1="274.0" x2="962.0" y2="274.0" stroke="#c7cdd2" stroke-width="1"/>
+<rect x="54.0" y="256.0" width="336.0" height="36" rx="4" fill="#e5e8eb" stroke="#b7c0c7"/>
+<rect x="390.0" y="244.0" width="280.0" height="60" rx="6" fill="#c8e8c5" stroke="#2674a8" stroke-width="1.5"/>
+<text x="397.0" y="269.0" font-family="DejaVu Sans, sans-serif" font-size="16px" font-weight="700" fill="#17212b">1</text>
+<text x="397.0" y="288.0" font-family="DejaVu Sans, sans-serif" font-size="10px" font-weight="400" fill="#17212b">#0 3+5/2</text>
+<rect x="670.0" y="244.0" width="56.0" height="60" rx="6" fill="#c8e8c5" stroke="#2674a8" stroke-width="1.5"/>
+<text x="677.0" y="269.0" font-family="DejaVu Sans, sans-serif" font-size="16px" font-weight="700" fill="#17212b">3</text>
+<text x="677.0" y="288.0" font-family="DejaVu Sans, sans-serif" font-size="10px" font-weight="400" fill="#17212b">#1 11/2+1/2</text>
+</svg>
