@@ -31,7 +31,7 @@ from fractions import Fraction
 from .pitch import kern_to_midi
 
 # 一个 kern 音符行 token：时值前缀 + 音名 + 升降号 + 修饰
-_NOTE_RE = re.compile(r"^(\d+\.*)([a-gA-G]+)([#n-]*)([LJ\[\]_]*)$")
+_NOTE_RE = re.compile(r"^(\d+\.*)([a-gA-G]+)([#n-]*)([LJ\[\]_()]*)$")
 # 休止符：`4r` / `8r` / `2.r`。**必须显式识别并推进位置**。
 # 早期版本的正则不含 r，`4r` 落到 `continue` 分支 —— 位置不推进，
 # 后面所有音整体前移，且【不报错】。真值 kern 里休止符很常见

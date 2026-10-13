@@ -138,6 +138,23 @@ sets the small browser globals expected by the local engine, calls
 `hc.parse(notation)`, and writes `result.svg`. The generated comparison SVG
 stacks the two original HC pages; it is not a replacement renderer.
 
+For the full MiniUnSongData website renderer, use the local workbench:
+
+```bash
+python3 web_server.py \
+  --runtime-dir /path/to/website_renderer/runtime \
+  --port 8765
+```
+
+Open `http://127.0.0.1:8765/`, paste a `phrase.json` or notation, and click
+either `渲染官方 SVG` or `Mini → Kern → Mini`. The page shows the generated
+Kern, recovered JSON, source SVG, and recovered SVG. The server uses the
+existing official `render_svg.js` runtime and does not bundle it.
+
+The MiniUnSongData schema and sidecar policy are documented in
+[`docs/mini-unisongdata.md`](docs/mini-unisongdata.md); runtime setup is in
+[`docs/runtime.md`](docs/runtime.md).
+
 ## Ten Examples
 
 Each row links to the source event data, generated Kern, and the combined
@@ -242,6 +259,12 @@ The generator asserts exact equality between every source event list and its
 Kern timeline after conversion, then renders both notation JSON files through
 the HC wrapper.
 
+The adapter tests can be run independently:
+
+```bash
+python3 -m unittest discover -s tests -v
+```
+
 ## Files
 
 ```text
@@ -250,7 +273,10 @@ jianpu_kern/
   to_kern.py       Jianpu event timeline -> **kern
   from_kern.py     **kern -> exact timeline / triples / tokens
   kern_files.py    Parser for real multi-spine Kern files
+  mini_unisongdata.py  MiniUnSongData/phrase.json adapter
 render_jianpu.py   Python wrapper for the original HC SVG path
+web_server.py      Local manual rendering and roundtrip server
+web/               Manual JSON/notation rendering workbench
 examples/          10 notation/Kern/input-output/comparison examples
 tools/make_examples.py
 tools/render_hc.js  Thin adapter; HC itself is not bundled
