@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Jianpu / Kern Workbench</title>
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <span class="brand-mark">1·K</span>
+      <div>
+        <h1>Jianpu / Kern Workbench</h1>
+        <p>MiniUnSongData 的官方 SVG 渲染与主旋律往返检查</p>
+      </div>
+    </div>
+    <div id="runtimeStatus" class="status-chip status-waiting">检查 runtime</div>
+  </header>
+
+  <main class="workspace">
+    <section class="input-panel panel">
+      <div class="panel-heading">
+        <div>
+          <span class="eyebrow">INPUT</span>
+          <h2>输入谱面</h2>
+        </div>
+        <label class="sample-picker">
+          <span>样例</span>
+          <select id="sampleSelect">
+            <option value="real">真实 Mini JSON + 歌词</option>
+            <option value="complex">复杂时值 + 歌词</option>
+            <option value="json">MiniUnSongData JSON</option>
+            <option value="notation">纯 notation</option>
+            <optgroup id="guofengOptions" label="古风案例"></optgroup>
+          </select>
+        </label>
+      </div>
+      <textarea id="inputText" spellcheck="false" aria-label="MiniUnSongData JSON or notation"></textarea>
+      <div class="input-actions">
+        <button id="loadSample" class="button button-quiet" type="button">载入样例</button>
+        <button id="clearInput" class="button button-quiet" type="button">清空</button>
+        <span id="inputHint" class="input-hint">自动识别 JSON 或 notation</span>
+      </div>
+      <div id="errorBox" class="error-box" role="alert" hidden></div>
+      <div class="action-row">
+        <button id="renderButton" class="button button-primary" type="button">
+          <span class="button-icon">▶</span>渲染官方 SVG
+        </button>
+        <button id="roundtripButton" class="button button-accent" type="button">
+          <span class="button-icon">↻</span>Mini → Kern → Mini
+        </button>
+      </div>
+    </section>
+
+    <section class="render-panel panel">
+      <div class="panel-heading compact">
+        <div>
+          <span class="eyebrow">RENDER</span>
+          <h2>官方 SVG</h2>
+        </div>
+        <span id="renderTitle" class="muted">尚未渲染</span>
+      </div>
+      <div id="sourceSvg" class="svg-stage empty-stage">
+        <div class="empty-state">点击“渲染官方 SVG”查看谱面</div>
+      </div>
+    </section>
+
+    <section id="roundtripPanel" class="roundtrip-panel" hidden>
+      <div class="roundtrip-heading">
+        <div>
+          <span class="eyebrow">ROUNDTRIP</span>
+          <h2>转换检查</h2>
+        </div>
+        <div id="roundtripSummary" class="summary"></div>
+      </div>
+      <div class="svg-comparison">
+        <article class="svg-card">
+          <div class="data-heading"><h3>原始简谱 SVG</h3><span class="pill">官方 runtime</span></div>
+          <div id="roundtripSourceSvg" class="svg-stage"></div>
+        </article>
+        <article class="svg-card staff-card">
+          <div class="data-heading"><h3>Kern 五线谱 SVG</h3><span class="pill pill-staff">Verovio</span></div>
+          <div id="staffSvg" class="svg-stage"></div>
+        </article>
+        <article class="svg-card">
+          <div class="data-heading"><h3>Kern → Mini 简谱 SVG</h3><span class="pill pill-accent">官方 runtime</span></div>
+          <div id="recoveredSvg" class="svg-stage"></div>
+        </article>
+      </div>
+      <div class="roundtrip-grid">
+        <article class="data-panel">
+          <div class="data-heading"><h3>Generated **kern</h3><button id="copyKern" class="copy-button" type="button">复制</button></div>
+          <pre id="kernOutput" class="code-output"></pre>
+        </article>
+        <article class="data-panel recovered-json-panel">
+          <div class="data-heading"><h3>Recovered Mini JSON</h3><button id="copyJson" class="copy-button" type="button">复制</button></div>
+          <pre id="jsonOutput" class="code-output"></pre>
+        </article>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <span>4/4 主旋律 roundtrip 使用现有 jianpu_kern 核心</span>
+    <span>第三方 HC engine 不在仓库内</span>
+  </footer>
+  <script src="/app.js"></script>
+</body>
+</html>

@@ -1,228 +1,191 @@
 #!/usr/bin/env python3
-"""Render event timelines as small, dependency-free SVG score comparisons.
+"""Render Jianpu notation through the original HC notation -> SVG path.
 
-This is a semantic comparison renderer. It deliberately renders the event
-timeline rather than claiming to reproduce a source editor's typography.
+The HC engine is third-party and is intentionally not bundled. Set HC_ENGINE
+or pass --engine with the path to a local hc_*.js file.
 """
 from __future__ import annotations
 
 import argparse
-import html
+import copy
 import json
-from fractions import Fraction
+import os
+import re
+import subprocess
+import tempfile
+import xml.etree.ElementTree as ET
 from pathlib import Path
 
-from jianpu_kern import kern_to_timeline
+
+ROOT = Path(__file__).resolve().parent
+HC_WRAPPER = ROOT / "tools" / "render_hc.js"
+SVG_NS = "http://www.w3.org/2000/svg"
+ET.register_namespace("", SVG_NS)
 
 
-def _frac(value) -> Fraction:
-    return Fraction(str(value))
+def load_notation(path: str | Path) -> tuple[str, str]:
+    """Read a notation text file or a raw JSON/songdata JSON file."""
+    source = Path(path)
+    if source.suffix.lower() != ".json":
+        return source.read_text(encoding="utf-8"), source.stem
+
+    data = json.loads(source.read_text(encoding="utf-8"))
+    songdata = data.get("songdata", data)
+    if isinstance(songdata, dict) and isinstance(songdata.get("notation"), str):
+        return songdata["notation"], songdata.get("song_name") or source.stem
+    raise ValueError(f"{source}: JSON does not contain songdata.notation")
 
 
-def load_events(path: str | Path) -> tuple[str, int, list[tuple[Fraction, Fraction, int]]]:
-    data = json.loads(Path(path).read_text(encoding="utf-8"))
-    events = [
-        (_frac(row["onset"]), _frac(row["dur"]), int(row["midi"]))
-        for row in data["events"]
-    ]
-    return data.get("title", Path(path).stem), int(data.get("meter_bpb", 4)), events
-
-
-def pitch_label(midi: int) -> str:
-    names = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"]
-    return f"{names[midi % 12]}{midi // 12 - 1}"
-
-
-def jianpu_label(midi: int, tonic: int = 60) -> str:
-    names = ["1", "#1", "2", "#2", "3", "4", "#4", "5", "#5", "6", "#6", "7"]
-    delta = midi - tonic
-    octave, degree = divmod(delta, 12)
-    label = names[degree]
-    if octave > 0:
-        label += "'" * octave
-    elif octave < 0:
-        label += "," * (-octave)
-    return label
-
-
-def _text(x: float, y: float, value: str, size: int = 14, weight: str = "400") -> str:
-    return (
-        f'<text x="{x:.1f}" y="{y:.1f}" font-family="DejaVu Sans, sans-serif" '
-        f'font-size="{size}px" font-weight="{weight}" fill="#17212b">'
-        f"{html.escape(value)}</text>"
-    )
-
-
-def render_events_svg(
-    events: list[tuple[Fraction, Fraction, int]],
-    title: str,
-    out: str | Path,
-    meter_bpb: int = 4,
-    tonic: int = 60,
+def render_notation(
+    notation_path: str | Path,
+    out_path: str | Path,
+    *,
+    engine: str = "",
+    title: str = "",
 ) -> None:
-    """Render a timeline with notes, rests, barlines, and exact values."""
-    if not events:
-        raise ValueError("cannot render an empty event list")
+    """Invoke the local HC engine wrapper and write the original SVG."""
+    notation = Path(notation_path)
+    out = Path(out_path)
+    out.parent.mkdir(parents=True, exist_ok=True)
+    cmd = ["node", str(HC_WRAPPER), "--notation", str(notation), "--out", str(out)]
+    if engine:
+        cmd += ["--engine", engine]
+    if title:
+        cmd += ["--title", title]
+    result = subprocess.run(cmd, capture_output=True, text=True)
+    if result.returncode:
+        detail = (result.stderr or result.stdout).strip()
+        raise RuntimeError(f"HC rendering failed for {notation}: {detail[-3000:]}")
+    print(result.stdout.strip())
 
-    end = max(onset + dur for onset, dur, _ in events)
-    bars = max(1, (int(end / meter_bpb) + (end % meter_bpb != 0)))
-    total_beats = Fraction(bars * meter_bpb)
-    scale = 112.0
-    left, top = 54.0, 88.0
-    row_h = 112.0
-    width = left + float(total_beats) * scale + 44.0
-    height = top + row_h + 56.0
-    baseline = top + 66.0
 
-    out_path = Path(out)
-    out_path.parent.mkdir(parents=True, exist_ok=True)
-    parts = [
-        f'<svg xmlns="http://www.w3.org/2000/svg" width="{width:.0f}" '
-        f'height="{height:.0f}" viewBox="0 0 {width:.0f} {height:.0f}">',
-        "<rect width=\"100%\" height=\"100%\" fill=\"#fbfaf7\"/>",
-        _text(left, 32, title, 21, "700"),
-        _text(left, 56, "semantic event timeline | blue = note | gray = rest", 12),
-        f'<line x1="{left}" y1="{baseline}" x2="{width - 32}" y2="{baseline}" '
-        'stroke="#c7cdd2" stroke-width="1"/>',
-    ]
+def render_json(
+    json_path: str | Path,
+    out_path: str | Path,
+    *,
+    engine: str = "",
+    title: str = "",
+) -> None:
+    """Render a raw songdata JSON, including its optional lyric field."""
+    out = Path(out_path)
+    out.parent.mkdir(parents=True, exist_ok=True)
+    cmd = ["node", str(HC_WRAPPER), "--json", str(json_path), "--out", str(out)]
+    if engine:
+        cmd += ["--engine", engine]
+    if title:
+        cmd += ["--title", title]
+    result = subprocess.run(cmd, capture_output=True, text=True)
+    if result.returncode:
+        detail = (result.stderr or result.stdout).strip()
+        raise RuntimeError(f"HC rendering failed for {json_path}: {detail[-3000:]}")
+    print(result.stdout.strip())
 
-    for bar in range(bars + 1):
-        x = left + bar * meter_bpb * scale
-        parts.append(
-            f'<line x1="{x:.1f}" y1="{top - 14:.1f}" x2="{x:.1f}" '
-            f'y2="{baseline + 18:.1f}" stroke="#697681" stroke-width="2"/>'
-        )
-        if bar < bars:
-            parts.append(_text(x + 5, top - 22, f"bar {bar + 1}", 11))
 
-    previous_end = Fraction(0)
-    for index, (onset, dur, midi) in enumerate(events):
-        if onset > previous_end:
-            x = left + float(previous_end) * scale
-            w = float(onset - previous_end) * scale
-            parts.append(
-                f'<rect x="{x:.1f}" y="{baseline - 22:.1f}" width="{w:.1f}" height="44" '
-                'rx="4" fill="#e5e8eb" stroke="#b7c0c7"/>'
-            )
-            parts.append(_text(x + 6, baseline + 5, f"rest {onset - previous_end}", 11))
+def _svg_size(root: ET.Element) -> tuple[float, float]:
+    view_box = root.get("viewBox", "").split()
+    if len(view_box) == 4:
+        return float(view_box[2]), float(view_box[3])
 
-        x = left + float(onset) * scale
-        w = max(12.0, float(dur) * scale)
-        parts.append(
-            f'<rect x="{x:.1f}" y="{baseline - 34:.1f}" width="{w:.1f}" height="68" '
-            'rx="6" fill="#b9ddf5" stroke="#2674a8" stroke-width="1.5"/>'
-        )
-        parts.append(_text(x + 7, baseline - 8, jianpu_label(midi, tonic), 18, "700"))
-        parts.append(_text(x + 7, baseline + 14, pitch_label(midi), 11))
-        parts.append(_text(x + 7, baseline + 29, f"#{index}: {onset}+{dur}", 10))
-        previous_end = max(previous_end, onset + dur)
+    def numeric(value: str | None, fallback: float) -> float:
+        match = re.match(r"\s*([0-9.]+)", value or "")
+        return float(match.group(1)) if match else fallback
 
-    if previous_end < total_beats:
-        x = left + float(previous_end) * scale
-        w = float(total_beats - previous_end) * scale
-        parts.append(
-            f'<rect x="{x:.1f}" y="{baseline - 22:.1f}" width="{w:.1f}" height="44" '
-            'rx="4" fill="#f0f1f2" stroke="#d0d4d7"/>'
-        )
-
-    parts.append("</svg>")
-    out_path.write_text("\n".join(parts) + "\n", encoding="utf-8")
+    return numeric(root.get("width"), 1000.0), numeric(root.get("height"), 1414.0)
 
 
 def render_comparison_svg(
-    source: list[tuple[Fraction, Fraction, int]],
-    recovered: list[tuple[Fraction, Fraction, int]],
-    title: str,
-    out: str | Path,
-    meter_bpb: int = 4,
-    tonic: int = 60,
+    before_path: str | Path,
+    after_path: str | Path,
+    out_path: str | Path,
+    *,
+    title: str = "",
 ) -> None:
-    """Render source and recovered timelines in one SVG for visual comparison."""
-    if not source or not recovered:
-        raise ValueError("comparison requires two non-empty event lists")
+    """Stack two original HC SVG pages into one inspectable comparison SVG."""
+    before = ET.parse(before_path).getroot()
+    after = ET.parse(after_path).getroot()
+    before_w, before_h = _svg_size(before)
+    after_w, after_h = _svg_size(after)
+    width = max(before_w, after_w)
+    label_h = 36.0
+    gap = 18.0
+    top = label_h if title else 0.0
+    height = top + label_h + before_h + gap + label_h + after_h
 
-    end = max(
-        max(onset + dur for onset, dur, _ in source),
-        max(onset + dur for onset, dur, _ in recovered),
+    root = ET.Element(
+        f"{{{SVG_NS}}}svg",
+        {
+            "width": f"{width:g}",
+            "height": f"{height:g}",
+            "viewBox": f"0 0 {width:g} {height:g}",
+            "class": "hc-comparison",
+            "version": "1.1",
+        },
     )
-    bars = max(1, int(end / meter_bpb) + bool(end % meter_bpb))
-    total_beats = Fraction(bars * meter_bpb)
-    scale = 112.0
-    left, top = 54.0, 92.0
-    row_h = 122.0
-    width = left + float(total_beats) * scale + 44.0
-    height = top + row_h * 2 + 42.0
-    parts = [
-        f'<svg xmlns="http://www.w3.org/2000/svg" width="{width:.0f}" '
-        f'height="{height:.0f}" viewBox="0 0 {width:.0f} {height:.0f}">',
-        "<rect width=\"100%\" height=\"100%\" fill=\"#fbfaf7\"/>",
-        _text(left, 32, title, 21, "700"),
-        _text(left, 56, "source events vs Kern roundtrip | exact Fraction timeline", 12),
-    ]
-
-    for bar in range(bars + 1):
-        x = left + bar * meter_bpb * scale
-        parts.append(
-            f'<line x1="{x:.1f}" y1="{top - 20:.1f}" x2="{x:.1f}" '
-            f'y2="{top + row_h * 2 - 18:.1f}" stroke="#697681" stroke-width="2"/>'
+    root.append(
+        ET.Element(
+            f"{{{SVG_NS}}}rect",
+            {"width": "100%", "height": "100%", "fill": "white"},
         )
-        if bar < bars:
-            parts.append(_text(x + 5, top - 28, f"bar {bar + 1}", 11))
-
-    def draw_row(
-        events: list[tuple[Fraction, Fraction, int]], label: str, row: int, fill: str
-    ) -> None:
-        baseline = top + row * row_h + 60.0
-        parts.append(_text(8, baseline + 5, label, 12, "700"))
-        parts.append(
-            f'<line x1="{left}" y1="{baseline:.1f}" x2="{width - 32:.1f}" '
-            f'y2="{baseline:.1f}" stroke="#c7cdd2" stroke-width="1"/>'
+    )
+    if title:
+        title_node = ET.Element(
+            f"{{{SVG_NS}}}text",
+            {
+                "x": "20",
+                "y": "24",
+                "font-family": "sans-serif",
+                "font-size": "16",
+                "font-weight": "bold",
+            },
         )
-        previous_end = Fraction(0)
-        for index, (onset, dur, midi) in enumerate(events):
-            if onset > previous_end:
-                x = left + float(previous_end) * scale
-                w = float(onset - previous_end) * scale
-                parts.append(
-                    f'<rect x="{x:.1f}" y="{baseline - 18:.1f}" width="{w:.1f}" height="36" '
-                    'rx="4" fill="#e5e8eb" stroke="#b7c0c7"/>'
-                )
-            x = left + float(onset) * scale
-            w = max(12.0, float(dur) * scale)
-            parts.append(
-                f'<rect x="{x:.1f}" y="{baseline - 30:.1f}" width="{w:.1f}" height="60" '
-                f'rx="6" fill="{fill}" stroke="#2674a8" stroke-width="1.5"/>'
-            )
-            parts.append(_text(x + 7, baseline - 5, jianpu_label(midi, tonic), 16, "700"))
-            parts.append(_text(x + 7, baseline + 14, f"#{index} {onset}+{dur}", 10))
-            previous_end = max(previous_end, onset + dur)
+        title_node.text = title
+        root.append(title_node)
 
-    draw_row(source, "source", 0, "#b9ddf5")
-    draw_row(recovered, "after", 1, "#c8e8c5")
-    parts.append("</svg>")
-    out_path = Path(out)
-    out_path.parent.mkdir(parents=True, exist_ok=True)
-    out_path.write_text("\n".join(parts) + "\n", encoding="utf-8")
+    def add_page(source: ET.Element, y: float, label: str) -> None:
+        text = ET.Element(
+            f"{{{SVG_NS}}}text",
+            {
+                "x": "20",
+                "y": f"{y + 24:g}",
+                "font-family": "sans-serif",
+                "font-size": "14",
+                "font-weight": "bold",
+            },
+        )
+        text.text = label
+        root.append(text)
+        group = ET.Element(
+            f"{{{SVG_NS}}}g",
+            {"transform": f"translate(0,{y + label_h:g})"},
+        )
+        for child in source:
+            group.append(copy.deepcopy(child))
+        root.append(group)
+
+    first_y = top
+    add_page(before, first_y, "BEFORE: original Jianpu notation")
+    second_y = first_y + label_h + before_h + gap
+    Path(out_path).parent.mkdir(parents=True, exist_ok=True)
+    add_page(after, second_y, "AFTER: Kern roundtrip notation")
+    Path(out_path).write_bytes(ET.tostring(root, encoding="utf-8", xml_declaration=True))
 
 
 def main() -> None:
-    ap = argparse.ArgumentParser(description="Render Jianpu event timelines as SVG")
-    src = ap.add_mutually_exclusive_group(required=True)
-    src.add_argument("--events", help="JSON with title, meter_bpb, and events")
-    src.add_argument("--kern", help="single-spine **kern file")
-    ap.add_argument("--out", required=True)
+    ap = argparse.ArgumentParser(description="Render original Jianpu notation SVGs through HC")
+    source = ap.add_mutually_exclusive_group(required=True)
+    source.add_argument("--notation", help="notation text file")
+    source.add_argument("--json", "--raw", dest="json_path", help="JSON containing songdata.notation")
+    ap.add_argument("--out", required=True, help="output SVG path")
+    ap.add_argument("--engine", default=os.environ.get("HC_ENGINE", ""))
     ap.add_argument("--title", default="")
-    ap.add_argument("--meter-bpb", type=int, default=4)
     args = ap.parse_args()
 
-    if args.events:
-        title, meter, events = load_events(args.events)
-        render_events_svg(events, args.title or title, args.out, meter)
-        return
-
-    kern = Path(args.kern).read_text(encoding="utf-8")
-    events = kern_to_timeline(kern)
-    render_events_svg(events, args.title or Path(args.kern).stem, args.out, args.meter_bpb)
+    if not args.engine:
+        ap.error("set HC_ENGINE or pass --engine /path/to/hc_*.js")
+    if args.notation:
+        render_notation(args.notation, args.out, engine=args.engine, title=args.title)
+    else:
+        render_json(args.json_path, args.out, engine=args.engine, title=args.title)
 
 
 if __name__ == "__main__":

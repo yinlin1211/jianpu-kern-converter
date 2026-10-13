@@ -3,10 +3,11 @@
 Event-level conversion between Jianpu-style beat timelines and Humdrum
 `**kern` for 4/4 monophonic melodies.
 
-This repository contains only the reusable conversion program, a small
-dependency-free SVG renderer, and ten synthetic examples covering different
-notation features. It does not contain the source corpus, training data,
-audio, model weights, or third-party score-rendering assets.
+This repository contains only the reusable conversion program and ten
+synthetic examples covering different notation features. Jianpu SVG output is
+generated through the original `notation -> hc.parse() -> SVG` path. The
+third-party HC engine is not included: provide it locally with `HC_ENGINE` or
+`--engine`.
 
 ## Result
 
@@ -26,8 +27,8 @@ For the supported scope, the round trip is exact:
 | Pitch, onset, and duration mismatches | 0 |
 
 The public examples are intentionally short and synthetic. Every example has
-the source event JSON, generated Kern, source SVG, recovered SVG, and a
-combined comparison SVG.
+the source `songdata.notation` JSON, generated Kern, original-HC source SVG,
+original-HC recovered SVG, and a combined comparison SVG.
 
 ## Scope
 
@@ -42,10 +43,10 @@ Supported and tested:
 - triplet values in the internal Fraction timeline
 - conversion to the model-facing `[midi, bim, dur_q]` triples
 
-Not silently claimed:
+Not silently claimed by the event converter:
 
 - original notation typography or glyph choices
-- lyrics, chord symbols, ornaments, repeats, or multi-voice structure
+- lyric alignment, chord symbols, ornaments, repeats, or multi-voice structure
 - automatic recovery of pickup phase when an external Kern file omitted its
   leading rest
 - lossless triplet timing in the integer `bim`/`dur_q` interface
@@ -107,23 +108,52 @@ splits notes at barlines, and uses Kern tie markers to preserve event identity.
 
 ## Rendering
 
-`render_jianpu.py` creates a compact SVG from either event JSON or a single
-spine Kern file. It uses only the Python standard library:
+`render_jianpu.py` is a wrapper around the original HC renderer. It accepts
+notation text or a JSON object containing `songdata.notation`. When the JSON
+also has a `songdata.lyric` field (a JSON string or list of lyric rows), those
+rows are passed to HC as `{lyric}...{/lyric}` blocks:
 
 ```bash
 python3 render_jianpu.py \
-  --events examples/06_complex_25.json \
-  --out /tmp/source.svg
+  --json examples/06_complex_25.json \
+  --out /tmp/source.svg \
+  --engine /path/to/hc_*.js
 
-python3 render_jianpu.py \
-  --kern examples/06_complex_25.krn \
-  --out /tmp/recovered.svg
+HC_ENGINE=/path/to/hc_*.js python3 render_jianpu.py \
+  --notation notation.txt \
+  --out /tmp/notation.svg
 ```
 
-The repository's generated `*_comparison.svg` files show the source timeline
-in blue and the Kern roundtrip timeline in green. This is a semantic event
-rendering for conversion verification, not a replacement for a full
-engraving engine.
+For a JSON file with lyrics:
+
+```bash
+python3 render_jianpu.py \
+  --json score_with_lyrics.json \
+  --out score_with_lyrics.svg \
+  --engine /path/to/hc_*.js
+```
+
+The wrapper does not copy or upload the HC engine. `tools/render_hc.js` only
+sets the small browser globals expected by the local engine, calls
+`hc.parse(notation)`, and writes `result.svg`. The generated comparison SVG
+stacks the two original HC pages; it is not a replacement renderer.
+
+For the full MiniUnSongData website renderer, use the local workbench:
+
+```bash
+python3 web_server.py \
+  --runtime-dir /path/to/website_renderer/runtime \
+  --port 8765
+```
+
+Open `http://127.0.0.1:8765/`, paste a `phrase.json` or notation, and click
+either `渲染官方 SVG` or `Mini → Kern → Mini`. The page shows the generated
+Kern, recovered JSON, source SVG, and recovered SVG. The server uses the
+existing official `render_svg.js` runtime and does not bundle it.
+
+The MiniUnSongData schema and sidecar policy are documented in
+[`docs/mini-unisongdata.md`](docs/mini-unisongdata.md); runtime setup is in
+[`docs/runtime.md`](docs/runtime.md).
 
 ## Ten Examples
 
@@ -148,8 +178,9 @@ comparison so the two renderings can be inspected separately.
 
 ### Rendered Comparisons
 
-Blue is the source event timeline; green is the timeline recovered after
-`Jianpu -> Kern -> Jianpu`. The matching rows are exact in every case.
+Each comparison contains two original HC pages: the source notation on top
+and the notation regenerated from the Kern roundtrip below. The matching
+event timelines are exact in every case.
 
 <details>
 <summary>01 Basic quarter-note grid</summary>
@@ -217,8 +248,22 @@ Blue is the source event timeline; green is the timeline recovered after
 python3 tools/make_examples.py
 ```
 
+The command requires a local engine, for example:
+
+```bash
+python3 tools/make_examples.py \
+  --engine /path/to/hc_12ab21fd54-0419-12.js
+```
+
 The generator asserts exact equality between every source event list and its
-Kern timeline after conversion.
+Kern timeline after conversion, then renders both notation JSON files through
+the HC wrapper.
+
+The adapter tests can be run independently:
+
+```bash
+python3 -m unittest discover -s tests -v
+```
 
 ## Files
 
@@ -228,9 +273,13 @@ jianpu_kern/
   to_kern.py       Jianpu event timeline -> **kern
   from_kern.py     **kern -> exact timeline / triples / tokens
   kern_files.py    Parser for real multi-spine Kern files
-render_jianpu.py   Dependency-free semantic SVG renderer
-examples/          10 synthetic input/output/comparison examples
-tools/              Reproducible example generator
+  mini_unisongdata.py  MiniUnSongData/phrase.json adapter
+render_jianpu.py   Python wrapper for the original HC SVG path
+web_server.py      Local manual rendering and roundtrip server
+web/               Manual JSON/notation rendering workbench
+examples/          10 notation/Kern/input-output/comparison examples
+tools/make_examples.py
+tools/render_hc.js  Thin adapter; HC itself is not bundled
 ```
 
 ## License

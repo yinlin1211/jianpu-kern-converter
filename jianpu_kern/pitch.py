@@ -21,7 +21,7 @@ NAMES = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"]
 #   4.cc      时值 4.  音名 cc
 #   16a-      时值 16  音名 a   降号
 #   8A[       时值 8   音名 A   连音线开
-NOTE_RE = re.compile(r"^(\d+\.*)([a-gA-G]+)([#n-]*)([LJ\[\]_]*)$")
+NOTE_RE = re.compile(r"^(\d+\.*)([a-gA-G]+)([#n-]*)([LJ\[\]_()]*)$")
 
 
 def kern_to_midi(tok: str) -> int | None:

@@ -1,26 +1,8 @@
 {
-  "title": "Accidentals and octaves",
-  "meter_bpb": 4,
-  "events": [
-    {
-      "onset": "0",
-      "dur": "1",
-      "midi": 48
-    },
-    {
-      "onset": "1",
-      "dur": "1",
-      "midi": 61
-    },
-    {
-      "onset": "2",
-      "dur": "1",
-      "midi": 73
-    },
-    {
-      "onset": "3",
-      "dur": "1",
-      "midi": 84
-    }
-  ]
+  "songdata": {
+    "song_name": "Accidentals and octaves",
+    "keynote": "1=C",
+    "rhythm": "4/4",
+    "notation": "{bpm:90}\n{key_signature:C}\n{time_signature:4/4}\n1, 1# 1#g 1gg |\n"
+  }
 }

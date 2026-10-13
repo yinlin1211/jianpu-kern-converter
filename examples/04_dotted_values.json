@@ -1,21 +1,8 @@
 {
-  "title": "Dotted values",
-  "meter_bpb": 4,
-  "events": [
-    {
-      "onset": "0",
-      "dur": "3/2",
-      "midi": 60
-    },
-    {
-      "onset": "3/2",
-      "dur": "3/4",
-      "midi": 64
-    },
-    {
-      "onset": "9/4",
-      "dur": "1/4",
-      "midi": 67
-    }
-  ]
+  "songdata": {
+    "song_name": "Dotted values",
+    "keynote": "1=C",
+    "rhythm": "4/4",
+    "notation": "{bpm:90}\n{key_signature:C}\n{time_signature:4/4}\n1. 3_. 5=\n"
+  }
 }

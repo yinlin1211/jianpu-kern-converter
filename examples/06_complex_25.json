@@ -1,16 +1,8 @@
 {
-  "title": "Complex 2.5-beat value",
-  "meter_bpb": 4,
-  "events": [
-    {
-      "onset": "3",
-      "dur": "5/2",
-      "midi": 60
-    },
-    {
-      "onset": "11/2",
-      "dur": "1/2",
-      "midi": 64
-    }
-  ]
+  "songdata": {
+    "song_name": "Complex 2.5-beat value",
+    "keynote": "1=C",
+    "rhythm": "4/4",
+    "notation": "{bpm:90}\n{key_signature:C}\n{time_signature:4/4}\n0 0 0 ( 1 | 1. ) 3_\n"
+  }
 }

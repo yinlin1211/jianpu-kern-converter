@@ -1,21 +1,8 @@
 {
-  "title": "Multi-bar rest and late entry",
-  "meter_bpb": 4,
-  "events": [
-    {
-      "onset": "0",
-      "dur": "1",
-      "midi": 60
-    },
-    {
-      "onset": "12",
-      "dur": "1",
-      "midi": 67
-    },
-    {
-      "onset": "13",
-      "dur": "1/2",
-      "midi": 69
-    }
-  ]
+  "songdata": {
+    "song_name": "Multi-bar rest and late entry",
+    "keynote": "1=C",
+    "rhythm": "4/4",
+    "notation": "{bpm:90}\n{key_signature:C}\n{time_signature:4/4}\n1 0 0 0 | 0 0 0 0 | 0 0 0 0 | 5 6_\n"
+  }
 }

@@ -1,0 +1,293 @@
+{
+ "songdata": {
+  "song_name": "野百合也有春天",
+  "keynote": "1=C",
+  "rhythm": "4/4",
+  "bpm": 90,
+  "notation": "{bpm:90}\n3= 3= 3= 3= 3= 1_ (5= 5) 0_ 3= 5=|1g= 1g= 1g= 1g= 7= 1g_ (6= 6 -)|||",
+  "lyric": "[\"仿佛如同一场梦,_我们如此短暂的相逢,_\"]"
+ },
+ "provenance": {
+  "song_id": "7574",
+  "events": [
+   0,
+   19
+  ],
+  "measures": [
+   1,
+   2
+  ],
+  "source_note_ids": [
+   1,
+   2,
+   3,
+   4,
+   5,
+   6,
+   7,
+   8,
+   9,
+   10,
+   11,
+   12,
+   13,
+   14,
+   15,
+   16,
+   17,
+   18,
+   19,
+   20
+  ],
+  "lrc_lines": [
+   "仿佛如同一场梦",
+   "我们如此短暂的相逢"
+  ]
+ },
+ "notes": [
+  {
+   "source_id": 1,
+   "occurrence": 0,
+   "measure": 1,
+   "content": "3",
+   "scale": 3,
+   "octave": 0,
+   "underBarCount": 2,
+   "dotCount": 0,
+   "isTiedNote": false,
+   "lyric": "仿"
+  },
+  {
+   "source_id": 2,
+   "occurrence": 0,
+   "measure": 1,
+   "content": "3",
+   "scale": 3,
+   "octave": 0,
+   "underBarCount": 2,
+   "dotCount": 0,
+   "isTiedNote": false,
+   "lyric": "佛"
+  },
+  {
+   "source_id": 3,
+   "occurrence": 0,
+   "measure": 1,
+   "content": "3",
+   "scale": 3,
+   "octave": 0,
+   "underBarCount": 2,
+   "dotCount": 0,
+   "isTiedNote": false,
+   "lyric": "如"
+  },
+  {
+   "source_id": 4,
+   "occurrence": 0,
+   "measure": 1,
+   "content": "3",
+   "scale": 3,
+   "octave": 0,
+   "underBarCount": 2,
+   "dotCount": 0,
+   "isTiedNote": false,
+   "lyric": "同"
+  },
+  {
+   "source_id": 5,
+   "occurrence": 0,
+   "measure": 1,
+   "content": "3",
+   "scale": 3,
+   "octave": 0,
+   "underBarCount": 2,
+   "dotCount": 0,
+   "isTiedNote": false,
+   "lyric": "一"
+  },
+  {
+   "source_id": 6,
+   "occurrence": 0,
+   "measure": 1,
+   "content": "1",
+   "scale": 1,
+   "octave": 0,
+   "underBarCount": 1,
+   "dotCount": 0,
+   "isTiedNote": false,
+   "lyric": "场"
+  },
+  {
+   "source_id": 7,
+   "occurrence": 0,
+   "measure": 1,
+   "content": "5",
+   "scale": 5,
+   "octave": 0,
+   "underBarCount": 2,
+   "dotCount": 0,
+   "isTiedNote": false,
+   "lyric": "梦,"
+  },
+  {
+   "source_id": 8,
+   "occurrence": 0,
+   "measure": 1,
+   "content": "5",
+   "scale": 5,
+   "octave": 0,
+   "underBarCount": 0,
+   "dotCount": 0,
+   "isTiedNote": false,
+   "lyric": null
+  },
+  {
+   "source_id": 9,
+   "occurrence": 0,
+   "measure": 1,
+   "content": "0",
+   "scale": 0,
+   "octave": 0,
+   "underBarCount": 1,
+   "dotCount": 0,
+   "isTiedNote": false,
+   "lyric": null
+  },
+  {
+   "source_id": 10,
+   "occurrence": 0,
+   "measure": 1,
+   "content": "3",
+   "scale": 3,
+   "octave": 0,
+   "underBarCount": 2,
+   "dotCount": 0,
+   "isTiedNote": false,
+   "lyric": "我"
+  },
+  {
+   "source_id": 11,
+   "occurrence": 0,
+   "measure": 1,
+   "content": "5",
+   "scale": 5,
+   "octave": 0,
+   "underBarCount": 2,
+   "dotCount": 0,
+   "isTiedNote": false,
+   "lyric": "们"
+  },
+  {
+   "source_id": 12,
+   "occurrence": 0,
+   "measure": 2,
+   "content": "1",
+   "scale": 1,
+   "octave": 1,
+   "underBarCount": 2,
+   "dotCount": 0,
+   "isTiedNote": false,
+   "lyric": "如"
+  },
+  {
+   "source_id": 13,
+   "occurrence": 0,
+   "measure": 2,
+   "content": "1",
+   "scale": 1,
+   "octave": 1,
+   "underBarCount": 2,
+   "dotCount": 0,
+   "isTiedNote": false,
+   "lyric": "此"
+  },
+  {
+   "source_id": 14,
+   "occurrence": 0,
+   "measure": 2,
+   "content": "1",
+   "scale": 1,
+   "octave": 1,
+   "underBarCount": 2,
+   "dotCount": 0,
+   "isTiedNote": false,
+   "lyric": "短"
+  },
+  {
+   "source_id": 15,
+   "occurrence": 0,
+   "measure": 2,
+   "content": "1",
+   "scale": 1,
+   "octave": 1,
+   "underBarCount": 2,
+   "dotCount": 0,
+   "isTiedNote": false,
+   "lyric": "暂"
+  },
+  {
+   "source_id": 16,
+   "occurrence": 0,
+   "measure": 2,
+   "content": "7",
+   "scale": 7,
+   "octave": 0,
+   "underBarCount": 2,
+   "dotCount": 0,
+   "isTiedNote": false,
+   "lyric": "的"
+  },
+  {
+   "source_id": 17,
+   "occurrence": 0,
+   "measure": 2,
+   "content": "1",
+   "scale": 1,
+   "octave": 1,
+   "underBarCount": 1,
+   "dotCount": 0,
+   "isTiedNote": false,
+   "lyric": "相"
+  },
+  {
+   "source_id": 18,
+   "occurrence": 0,
+   "measure": 2,
+   "content": "6",
+   "scale": 6,
+   "octave": 0,
+   "underBarCount": 2,
+   "dotCount": 0,
+   "isTiedNote": false,
+   "lyric": "逢,"
+  },
+  {
+   "source_id": 19,
+   "occurrence": 0,
+   "measure": 2,
+   "content": "6",
+   "scale": 6,
+   "octave": 0,
+   "underBarCount": 0,
+   "dotCount": 0,
+   "isTiedNote": false,
+   "lyric": null
+  },
+  {
+   "source_id": 20,
+   "occurrence": 0,
+   "measure": 2,
+   "content": "yan",
+   "scale": 0,
+   "octave": 0,
+   "underBarCount": 0,
+   "dotCount": 0,
+   "isTiedNote": false,
+   "lyric": null
+  }
+ ],
+ "verification": {
+  "passed": true,
+  "method": "re-export events equal stored slice"
+ }
+}
